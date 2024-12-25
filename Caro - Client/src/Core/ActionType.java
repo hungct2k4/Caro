@@ -20,7 +20,8 @@ public class ActionType {
     public static final String NEW_GAME = "15";
     public static final String ACCEP_NEWGAME = "16";
     public static final String REFUSE_NEWGAME = "17";
-    
+    public static final String GET_USER_LIST_ROOM = "GET_USER_LIST_ROOM";    
+    public static final String FIND_FRIEND = "FIND_FRIEND";    
     
     public static final String SEND_ICON = "18";
 

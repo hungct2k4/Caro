@@ -28,7 +28,7 @@ public class Login extends javax.swing.JFrame implements Observer {
         serverName.setText("localhost");
         lbName.setVisible(false);
         serverName.setVisible(false);
-        txtNickName.addKeyListener(new KeyAdapter() {
+        txtUsername.addKeyListener(new KeyAdapter() {
             @Override
             public void keyPressed(KeyEvent e) {
                 if (e.getKeyCode() == KeyEvent.VK_ENTER) {
@@ -43,13 +43,16 @@ public class Login extends javax.swing.JFrame implements Observer {
     private void initComponents() {
 
         jLabel1 = new javax.swing.JLabel();
-        txtNickName = new javax.swing.JTextField();
+        txtUsername = new javax.swing.JTextField();
         btnLogin = new javax.swing.JButton();
         jLabel3 = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
         serverName = new javax.swing.JTextField();
         lbName = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
+        txtPassword = new javax.swing.JTextField();
+        jLabel2 = new javax.swing.JLabel();
+        btnRegister = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Login");
@@ -61,13 +64,13 @@ public class Login extends javax.swing.JFrame implements Observer {
         });
 
         jLabel1.setFont(new java.awt.Font("SansSerif", 1, 18)); // NOI18N
-        jLabel1.setText("Nickname");
+        jLabel1.setText("username");
 
-        txtNickName.setFont(new java.awt.Font("SansSerif", 0, 18)); // NOI18N
-        txtNickName.setHorizontalAlignment(javax.swing.JTextField.CENTER);
-        txtNickName.addKeyListener(new java.awt.event.KeyAdapter() {
+        txtUsername.setFont(new java.awt.Font("SansSerif", 0, 18)); // NOI18N
+        txtUsername.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        txtUsername.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyTyped(java.awt.event.KeyEvent evt) {
-                txtNickNameKeyTyped(evt);
+                txtUsernameKeyTyped(evt);
             }
         });
 
@@ -87,27 +90,30 @@ public class Login extends javax.swing.JFrame implements Observer {
 
         jLabel5.setText("Author: TRAN CONG HUNG");
 
+        txtPassword.setFont(new java.awt.Font("SansSerif", 0, 18)); // NOI18N
+        txtPassword.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        txtPassword.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtPasswordActionPerformed(evt);
+            }
+        });
+
+        jLabel2.setFont(new java.awt.Font("SansSerif", 1, 18)); // NOI18N
+        jLabel2.setText("password");
+
+        btnRegister.setText("Register");
+        btnRegister.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnRegisterActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addContainerGap(390, Short.MAX_VALUE)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createSequentialGroup()
-                                .addGap(17, 17, 17)
-                                .addComponent(jLabel3))
-                            .addGroup(layout.createSequentialGroup()
-                                .addGap(127, 127, 127)
-                                .addComponent(jLabel1))
-                            .addGroup(layout.createSequentialGroup()
-                                .addGap(52, 52, 52)
-                                .addComponent(txtNickName, javax.swing.GroupLayout.PREFERRED_SIZE, 227, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(layout.createSequentialGroup()
-                                .addGap(130, 130, 130)
-                                .addComponent(btnLogin))))
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createSequentialGroup()
@@ -119,7 +125,24 @@ public class Login extends javax.swing.JFrame implements Observer {
                                     .addComponent(jLabel5)
                                     .addComponent(serverName, javax.swing.GroupLayout.PREFERRED_SIZE, 142, javax.swing.GroupLayout.PREFERRED_SIZE))))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 229, Short.MAX_VALUE)
-                        .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 310, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 310, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(jLabel3)
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addGroup(layout.createSequentialGroup()
+                                    .addComponent(btnRegister)
+                                    .addGap(115, 115, 115)
+                                    .addComponent(btnLogin, javax.swing.GroupLayout.PREFERRED_SIZE, 88, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGroup(layout.createSequentialGroup()
+                                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                        .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                        .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                    .addGap(35, 35, 35)
+                                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                        .addComponent(txtUsername, javax.swing.GroupLayout.DEFAULT_SIZE, 227, Short.MAX_VALUE)
+                                        .addComponent(txtPassword)))))))
                 .addGap(422, 422, 422))
         );
         layout.setVerticalGroup(
@@ -138,13 +161,19 @@ public class Login extends javax.swing.JFrame implements Observer {
                         .addComponent(lbName)
                         .addGap(31, 31, 31)
                         .addComponent(serverName, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(60, 60, 60)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(txtUsername, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel1))
                 .addGap(18, 18, 18)
-                .addComponent(jLabel1)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(txtPassword, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel2))
                 .addGap(18, 18, 18)
-                .addComponent(txtNickName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(51, 51, 51)
-                .addComponent(btnLogin)
-                .addContainerGap(157, Short.MAX_VALUE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btnLogin, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnRegister))
+                .addContainerGap(121, Short.MAX_VALUE))
         );
 
         pack();
@@ -158,7 +187,7 @@ public class Login extends javax.swing.JFrame implements Observer {
         if (result.mResultCode.equals(ResultCode.ERROR)) {
             JOptionPane.showMessageDialog(null, result.mContent, "Thất bại", JOptionPane.ERROR_MESSAGE);
         } else if (result.mActionType.equals(ActionType.LOGIN)) {
-            mClientManager.mNickname = txtNickName.getText().trim();
+            mClientManager.mNickname = txtUsername.getText().trim();
             mClientManager.deleteObserver(this);   //xóa obs login đi để tránh login nhận thông báo trong khi ko hoạt động
             ListRoom listRoom = new ListRoom(this, mClientManager);
             listRoom.setVisible(true);
@@ -167,11 +196,12 @@ public class Login extends javax.swing.JFrame implements Observer {
     }
 
     public void Login() {
-        String nickName = txtNickName.getText().trim();
-        System.out.println(nickName);
-        if (nickName.length() == 0) {
+        String urname = txtUsername.getText().trim();
+        String password = txtUsername.getText().trim();
+        System.out.println(urname);
+        if (urname.length() == 0) {
             JOptionPane.showMessageDialog(null, "Vui lòng nhập nick name", "Chưa nhập nick name", JOptionPane.WARNING_MESSAGE);
-            txtNickName.requestFocus();
+            txtUsername.requestFocus();
             return;
         }
         if (mClientManager != null) {
@@ -183,12 +213,12 @@ public class Login extends javax.swing.JFrame implements Observer {
         if (mClientManager.StartConnect()) {
             try {
                 btnLogin.setEnabled(false);
-                mClientManager.Login(nickName);
+                mClientManager.Login(urname, password);
             } catch (UnsupportedEncodingException ex) {
                 Logger.getLogger(Login.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
-        System.out.println("Name: " + nickName);
+        System.out.println("Name: " + urname + " " + password);
     }
     private void btnLoginActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLoginActionPerformed
         try {
@@ -206,17 +236,25 @@ public class Login extends javax.swing.JFrame implements Observer {
             e.printStackTrace();
         }
     }
-    private void txtNickNameKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtNickNameKeyTyped
+    private void txtUsernameKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtUsernameKeyTyped
         // TODO add your handling code here:
         if (evt.getKeyChar() == ';')
             evt.consume();
-    }//GEN-LAST:event_txtNickNameKeyTyped
+    }//GEN-LAST:event_txtUsernameKeyTyped
 
     private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
         // TODO add your handling code here:
         if (mClientManager != null)
             mClientManager.Dispose();
     }//GEN-LAST:event_formWindowClosing
+
+    private void txtPasswordActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtPasswordActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtPasswordActionPerformed
+
+    private void btnRegisterActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRegisterActionPerformed
+        
+    }//GEN-LAST:event_btnRegisterActionPerformed
 
     public static void main(String args[]) {
         /* Set the Nimbus look and feel */
@@ -252,13 +290,16 @@ public class Login extends javax.swing.JFrame implements Observer {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnLogin;
+    private javax.swing.JButton btnRegister;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel lbName;
     private javax.swing.JTextField serverName;
-    private javax.swing.JTextField txtNickName;
+    private javax.swing.JTextField txtPassword;
+    private javax.swing.JTextField txtUsername;
     // End of variables declaration//GEN-END:variables
 
 }

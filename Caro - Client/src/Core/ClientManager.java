@@ -126,6 +126,17 @@ public class ClientManager extends Observable {
         }
     }
     
+    public void Find(String mess) {
+        String line = ActionType.FIND_FRIEND + ";" + mess;
+        try {
+            mBufferWriter.write(line + "\n");
+            mBufferWriter.flush();
+        } catch (IOException ex) {
+            Result result = new Result("", ResultCode.ERROR, "Không thể kết nối tới server");
+            notifyObservers(result);
+        }
+    }
+    
 //    public void GetOpponent(String nameRoom) {
 //        String line = ActionType.GET_OPPONENT + ";" + nameRoom;
 //        try {
@@ -137,9 +148,9 @@ public class ClientManager extends Observable {
 //        }
 //    }
 
-    public void Login(String nickName) throws UnsupportedEncodingException //vì làm đơn giản nên chỉ cần đăng nhập với họ tên
+    public void Login(String nickName, String password) throws UnsupportedEncodingException //vì làm đơn giản nên chỉ cần đăng nhập với họ tên
     {
-        String line = ActionType.LOGIN + ";" + nickName;
+        String line = ActionType.LOGIN + ";" + nickName + ";" + password;
         try {
             mBufferWriter.write(line + "\n");
             mBufferWriter.flush();
@@ -239,6 +250,18 @@ public class ClientManager extends Observable {
 
     public void Logout() {
         String line = ActionType.LOGOUT + ";null";
+        try {
+            mBufferWriter.write(line + "\n");
+            mBufferWriter.flush();
+        } catch (IOException ex) {
+            ex.printStackTrace();
+            Result result = new Result("", ResultCode.ERROR, "Kết nối tới server có lỗi");
+            notifyObservers(result);
+        }
+    }
+
+    public void getUserListRoom() {
+        String line = ActionType.GET_USER_LIST_ROOM + ";null";
         try {
             mBufferWriter.write(line + "\n");
             mBufferWriter.flush();

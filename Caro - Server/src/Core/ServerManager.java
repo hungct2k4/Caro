@@ -150,13 +150,14 @@ public class ServerManager extends Observable {
         switch (actionType) {
             case ActionType.LOGIN: {
                 String nickName = lines[1];  //query có dạng actionType;nickname
-                if (CheckNickName(nickName)) {
+                String password = lines[2];  //query có dạng actionType;nickname
+                if (CheckPassword(nickName, password)) {
                     user.mNickName = nickName;
                     user.mLogined = true;
                     user.Send(actionType, ResultCode.OK, "OK");
                     notifyObservers(user.mNickName + " vừa đăng nhập thành công");
                 } else {
-                    user.Send(actionType, ResultCode.ERROR, "Nickname đã được người khác sử dụng");
+                    user.Send(actionType, ResultCode.ERROR, "Nickname không tồn tại hoặc sai Mật kHẩu");
                 }
                 break;
             }
@@ -165,7 +166,7 @@ public class ServerManager extends Observable {
                 String[] matrix = lines[3].split("x");
                 int row = Integer.parseInt(matrix[0]);
                 int col = Integer.parseInt(matrix[1]);
-                Room room = GeneralRoom(roomName,lines[2], row, col);
+                Room room = GeneralRoom(roomName, lines[2], row, col);
                 mListRoom.add(room);
                 user.mRoom = room;
                 if (user.Send(actionType, ResultCode.OK, room.mMaPhong)) {
@@ -195,7 +196,7 @@ public class ServerManager extends Observable {
                         listRoom = "";
                         for (int j = start; j < end; j++) {
                             Room room = mListRoom.get(j);
-                            listRoom += room.mMaPhong + "<col>" + room.mTenPhong + "<col>" + room.mChuPhong + "<col>" + room.CountUser() 
+                            listRoom += room.mMaPhong + "<col>" + room.mTenPhong + "<col>" + room.mChuPhong + "<col>" + room.CountUser()
                                     + room.row + "<col>" + room.column + "<col>" + "<row>";
                         }
                         System.out.print("Gửi lần thứ: " + i);
@@ -252,13 +253,13 @@ public class ServerManager extends Observable {
                 break;
             }
             case ActionType.SEND_MESSAGE: {
-                String nameIcon = lines[1];  
-                
+                String nameIcon = lines[1];
+
                 user.mRoom.SendToAllUser(user.mNickName, nameIcon);
                 notifyObservers(user.mNickName + " vừa gửi tin");
                 break;
             }
-            
+
             case ActionType.SEND_ICON: {
                 String contentMess = "";
                 if (lines.length >= 2) {
@@ -268,7 +269,7 @@ public class ServerManager extends Observable {
                 notifyObservers(user.mNickName + " vừa gửi icon");
                 break;
             }
-            
+
             case ActionType.LEAVE_ROOM: //query có dạng actionType;
             {
                 Room room = user.mRoom;
@@ -282,6 +283,13 @@ public class ServerManager extends Observable {
                 user.mRoom = null;
                 notifyObservers(user.mNickName + " vừa rời phòng");
                 resetRoom();
+                break;
+            }
+
+            case ActionType.FIND_FRIEND: {
+                String namme = lines[1];
+                String s = DBConnect.getIdByusername(namme);
+                notifyObservers(ActionType.FIND_FRIEND + ";" + s);
                 break;
             }
             case ActionType.LOGOUT: //query có dạng actionType;
@@ -331,6 +339,7 @@ public class ServerManager extends Observable {
                 user.mRoom.AccepNewGame(user.mNickName, ActionType.REFUSE_NEWGAME);
                 break;
             }
+
         }
     }
 
@@ -342,8 +351,8 @@ public class ServerManager extends Observable {
     public void resetRoom() {
         String listRoom = "";
         for (Room room : mListRoom) {
-            listRoom += room.mMaPhong + "<col>" + room.mTenPhong +"<col>" + room.mChuPhong + "<col>" + room.CountUser() + 
-                    "<col>" + room.row + "<col>" + room.column + "<col>" + "<row>";
+            listRoom += room.mMaPhong + "<col>" + room.mTenPhong + "<col>" + room.mChuPhong + "<col>" + room.CountUser()
+                    + "<col>" + room.row + "<col>" + room.column + "<col>" + "<row>";
         }
         for (User u : mListUser) {
             u.Send(ActionType.GET_LIST_ROOM, ResultCode.OK, listRoom);
@@ -351,15 +360,30 @@ public class ServerManager extends Observable {
     }
 
     //kiểm tra nickname đã tồn tại trong list user hay chưa. True là chưa có, false là có
-    boolean CheckNickName(String nickName) {
-        int size = mListUser.size();
-        for (int i = 0; i < size; i++) {
-            if (nickName.equals(mListUser.get(i).mNickName)) //nếu đã tồn tại nick name
-            {
-                return false;
-            }
+    boolean CheckNickName(String username, String passwd) {
+//        int size = mListUser.size();
+//        for (int i = 0; i < size; i++) {
+//            if (nickName.equals(mListUser.get(i).mNickName)) //nếu đã tồn tại nick name
+//            {
+//                return false;
+//            }
+//        }
+        if (!DBConnect.isUsernameExist(username)) {
+            DBConnect.addUser(username, passwd);
+            return true;
+        } else {
+            return false;
         }
-        return true;
+
+    }
+
+    boolean CheckPassword(String username, String passwd) {
+        if (DBConnect.isTruePassword(username, passwd)) {
+            return true;
+        } else {
+            return false;
+        }
+
     }
 
     //Tạo phòng mới
