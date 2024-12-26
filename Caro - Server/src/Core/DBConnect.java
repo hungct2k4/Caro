@@ -37,6 +37,23 @@ public class DBConnect {
             e.printStackTrace();
         }
     }
+    
+    public static void saveGame(String gameArr, int id) {
+        String insertUserSQL = "INSERT INTO history (user_game_id, data) VALUES (?, ?)";
+        System.out.println("ID" + id);
+        try ( Connection conn = DriverManager.getConnection(URL, USER, PASSWORD);  PreparedStatement pstmt = conn.prepareStatement(insertUserSQL)) {
+
+            // Set giá trị vào PreparedStatement
+            pstmt.setInt(1, id);
+            pstmt.setString(2, "VL");
+
+            // Thực thi câu lệnh
+            int rowsAffected = pstmt.executeUpdate();
+            System.out.println("Inserted history");
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    } 
 
     // Kiểm tra xem username đã tồn tại chưa
     public static boolean isUsernameExist(String username) {
@@ -62,27 +79,27 @@ public class DBConnect {
         return false;  // username không tồn tại
     }
 
-    public static String getIdByusername(String username) {
+    public static int getIdByusername(String username) {
         System.out.println("urname: " + username);
-        String checkUserSQL = "SELECT id, username FROM user_game WHERE username = ?";
+        String checkUserSQL = "SELECT id FROM user_game WHERE username = ?";
 
         try ( Connection conn = DriverManager.getConnection(URL, USER, PASSWORD);  PreparedStatement pstmt = conn.prepareStatement(checkUserSQL);  ResultSet rs = pstmt.executeQuery()) {
             pstmt.setString(1, username);
             while (rs.next()) {
                 // Lấy dữ liệu từ ResultSet
                 int id = rs.getInt("id");
-                String urname = rs.getString("username");
+//                String urname = rs.getString("username");
 
                 // In ra dữ liệu của người dùng
-                System.out.println("ID: " + id + ", Username: " + username + ", Password: " + urname);
-                return id + ";" + urname;
+                System.out.println("ID: " + id);
+                return id;
             }
 
         } catch (SQLException e) {
             e.printStackTrace();
         }
 
-        return "BLANK";  // username không tồn tại
+        return 0;  // username không tồn tại
     }
 
     public static void getUsers() {

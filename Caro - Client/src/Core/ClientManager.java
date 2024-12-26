@@ -1,4 +1,3 @@
-
 package Core;
 
 import java.io.BufferedWriter;
@@ -16,14 +15,14 @@ public class ClientManager extends Observable {
 
     public String serverName = "localhost";
     int port = 1106;
-    Socket mSocket;
+    public Socket mSocket;
     BufferedWriter mBufferWriter;
     DataInputStream mDataInputStream;
     Thread mThread;
-    
+
     Thread TimeThread;
     public String mNickname;
-    
+
     public ClientManager(Observer obs) //hàm khởi tạo khi chưa có socket
     {
         this.addObserver(obs);
@@ -48,7 +47,6 @@ public class ClientManager extends Observable {
             mThread.stop();
         }
     }
-    
 
     public boolean StartConnect() {
         try {
@@ -65,7 +63,6 @@ public class ClientManager extends Observable {
         }
     }
 
-    
     void StartThreadWaitResult() {
         mThread = new Thread(new Runnable() {
             @Override
@@ -102,7 +99,7 @@ public class ClientManager extends Observable {
         super.setChanged();
         super.notifyObservers(arg);
     }
-    
+
     public void SendIcon(String nameIcon) {
         String line = ActionType.SEND_ICON + ";" + nameIcon;
         try {
@@ -113,7 +110,7 @@ public class ClientManager extends Observable {
             notifyObservers(result);
         }
     }
-    
+
     public void SendMess(String mess) {
         mess = mess.replaceAll("\\n", "<br>");
         String line = ActionType.SEND_MESSAGE + ";" + mess;
@@ -125,7 +122,7 @@ public class ClientManager extends Observable {
             notifyObservers(result);
         }
     }
-    
+
     public void Find(String mess) {
         String line = ActionType.FIND_FRIEND + ";" + mess;
         try {
@@ -136,7 +133,7 @@ public class ClientManager extends Observable {
             notifyObservers(result);
         }
     }
-    
+
 //    public void GetOpponent(String nameRoom) {
 //        String line = ActionType.GET_OPPONENT + ";" + nameRoom;
 //        try {
@@ -147,7 +144,6 @@ public class ClientManager extends Observable {
 //            notifyObservers(result);
 //        }
 //    }
-
     public void Login(String nickName, String password) throws UnsupportedEncodingException //vì làm đơn giản nên chỉ cần đăng nhập với họ tên
     {
         String line = ActionType.LOGIN + ";" + nickName + ";" + password;
@@ -181,7 +177,7 @@ public class ClientManager extends Observable {
             notifyObservers(result);
         }
     }
-    
+
     public void SendTick(String tick, String location) {
         String line = ActionType.SEND_TICK + ";" + tick + ";" + location;
         try {
@@ -192,7 +188,7 @@ public class ClientManager extends Observable {
             notifyObservers(result);
         }
     }
-    
+
     public void NewGame() {
         String line = ActionType.NEW_GAME + ";";
         try {
@@ -203,7 +199,7 @@ public class ClientManager extends Observable {
             notifyObservers(result);
         }
     }
-    
+
     public void AccepNewGAme(String maPhong) {
         String line = ActionType.ACCEP_NEWGAME + ";" + maPhong;
         try {
@@ -214,7 +210,7 @@ public class ClientManager extends Observable {
             notifyObservers(result);
         }
     }
-    
+
     public void RefuseNewGame(String maPhong) {
         String line = ActionType.REFUSE_NEWGAME + ";" + maPhong;
         try {
@@ -262,6 +258,20 @@ public class ClientManager extends Observable {
 
     public void getUserListRoom() {
         String line = ActionType.GET_USER_LIST_ROOM + ";null";
+        try {
+            mBufferWriter.write(line + "\n");
+            mBufferWriter.flush();
+        } catch (IOException ex) {
+            ex.printStackTrace();
+            Result result = new Result("", ResultCode.ERROR, "Kết nối tới server có lỗi");
+            notifyObservers(result);
+        }
+    }
+
+    public void SaveGame(String jsonArray, String nickname) {
+        System.out.println("Nickname " + nickname);
+        String line = ActionType.SAVE_GAME + ";" + jsonArray + ";" + nickname;
+        System.out.println("Sent: " + line);
         try {
             mBufferWriter.write(line + "\n");
             mBufferWriter.flush();

@@ -1,6 +1,7 @@
 package Interface;
 
 import Core.ServerManager;
+import Core.VoiceChatServer;
 import java.util.Observable;
 import java.util.Observer;
 
@@ -20,6 +21,7 @@ public class ServerGame implements Observer {
 
     public static void main(String[] args) {
         new ServerGame();
+        new VoiceChatServer();
     }
 
     @Override

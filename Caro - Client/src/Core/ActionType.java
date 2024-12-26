@@ -24,5 +24,6 @@ public class ActionType {
     public static final String FIND_FRIEND = "FIND_FRIEND";    
     
     public static final String SEND_ICON = "18";
+    public static final String SAVE_GAME = "SAVE_GAME";    
 
 }

@@ -1,10 +1,13 @@
 package Core;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Observable;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -19,6 +22,49 @@ public class ServerManager extends Observable {
     ArrayList<User> mListUser = new ArrayList<>();
     ArrayList<Room> mListRoom = new ArrayList<>();
     ArrayList<User> mListUserWaitLogout = new ArrayList<>();
+
+    private static List<VoiceChatClientHandler> clients = new ArrayList<>();
+
+    public static void broadcast(byte[] audioData, VoiceChatClientHandler sender) {
+        for (VoiceChatClientHandler client : clients) {
+            if (client != sender) {
+                client.sendAudio(audioData);
+            }
+        }
+    }
+
+    static class VoiceChatClientHandler implements Runnable {
+
+        private Socket socket;
+        private OutputStream outputStream;
+
+        public VoiceChatClientHandler(Socket socket) {
+            this.socket = socket;
+        }
+
+        @Override
+        public void run() {
+            try ( InputStream inputStream = socket.getInputStream()) {
+                outputStream = socket.getOutputStream();
+                byte[] buffer = new byte[4096];
+                int bytesRead;
+                while ((bytesRead = inputStream.read(buffer)) != -1) {
+                    broadcast(buffer, this);
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+        public void sendAudio(byte[] audioData) {
+            try {
+                outputStream.write(audioData);
+                outputStream.flush();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
 
     public ServerManager(Observer obs) //hàm khởi tạo khi chưa có socket
     {
@@ -180,12 +226,6 @@ public class ServerManager extends Observable {
                 int size = mListRoom.size();//query có dạng actionType;
                 int rowsPerBlock = 500;    //số phòng gửi về mỗi block
                 if (size > 0) {
-                    /*Nếu có quá nhiều phòng(2000 chẳng hạn) thì 1 chuỗi string(1 lần gửi) sẽ không
-                    thể chứa hết được thông tin của tất cả phòng
-                    nên ta chia ra từng block gửi nhiều lần.
-                    Trong thực tế thì có thể sử dụng chức năng phân trang, nhưng trong project này
-                    không phân trang nên lựa chọn cách thức này
-                     */
                     String listRoom = "";
                     int start = 0;
                     int end = 0;
@@ -287,9 +327,9 @@ public class ServerManager extends Observable {
             }
 
             case ActionType.FIND_FRIEND: {
-                String namme = lines[1];
-                String s = DBConnect.getIdByusername(namme);
-                notifyObservers(ActionType.FIND_FRIEND + ";" + s);
+                String name = lines[1];
+                int id = DBConnect.getIdByusername(name);
+                notifyObservers(ActionType.FIND_FRIEND + ";" + id);
                 break;
             }
             case ActionType.LOGOUT: //query có dạng actionType;
@@ -337,6 +377,13 @@ public class ServerManager extends Observable {
             case ActionType.REFUSE_NEWGAME: {
                 String maPhong = lines[1];
                 user.mRoom.AccepNewGame(user.mNickName, ActionType.REFUSE_NEWGAME);
+                break;
+            }
+            case ActionType.SAVE_GAME: {
+                int id = DBConnect.getIdByusername(lines[2]);
+                
+                System.out.println("userName: " + lines[2]);
+                DBConnect.saveGame(request, id);
                 break;
             }
 

@@ -6,10 +6,12 @@ import java.util.Observer;
 import Core.ClientManager;
 import Core.Result;
 import Core.ResultCode;
+import Core.VoiceChatClient;
 
 import DropIcon.glasspanepopup.DefaultLayoutCallBack;
 import DropIcon.glasspanepopup.DefaultOption;
 import DropIcon.glasspanepopup.GlassPanePopup;
+import com.google.gson.Gson;
 
 import java.awt.Button;
 import java.awt.Color;
@@ -73,12 +75,13 @@ public class GameMatch extends javax.swing.JFrame implements Observer, ActionLis
     GameMatch roomchat;
     ImageIcon imgX;
     ImageIcon imgO;
-
+    public VoiceChatClient voiceChatClient;
     boolean running = true;
     Color myColor;
     Color yourColor;
 
     public GameMatch(ListRoom listRoom, ClientManager cm, String maPhong, String tenPhong, int soNguoi, int row, int col) {
+
         this.N = row;
         this.M = col;
 //        cellSize = Math.max(N, M);
@@ -178,6 +181,17 @@ public class GameMatch extends javax.swing.JFrame implements Observer, ActionLis
 //            JOptionPane.showMessageDialog(rootPane, ex, "Error", JOptionPane.ERROR_MESSAGE);
 //            return;
 //        }
+        StartMic();
+
+    }
+
+    public void StartMic() {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                voiceChatClient = new VoiceChatClient();
+            }
+        }).start();
     }
 
     @SuppressWarnings("unchecked")
@@ -202,6 +216,7 @@ public class GameMatch extends javax.swing.JFrame implements Observer, ActionLis
         ScrollChat = new javax.swing.JScrollPane();
         txtNoiDungChat = new javax.swing.JTextPane();
         cmdIcon = new Swing.ButtonBorder();
+        btnMic = new Swing.ButtonBorder();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         addWindowListener(new java.awt.event.WindowAdapter() {
@@ -350,6 +365,13 @@ public class GameMatch extends javax.swing.JFrame implements Observer, ActionLis
             }
         });
 
+        btnMic.setIcon(new javax.swing.ImageIcon(getClass().getResource("/sample/icon/unMic.png"))); // NOI18N
+        btnMic.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnMicActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout inforLayout = new javax.swing.GroupLayout(infor);
         infor.setLayout(inforLayout);
         inforLayout.setHorizontalGroup(
@@ -362,8 +384,10 @@ public class GameMatch extends javax.swing.JFrame implements Observer, ActionLis
                             .addComponent(ScrollChat)
                             .addComponent(jPanel4, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, inforLayout.createSequentialGroup()
-                                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 244, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(btnMic, javax.swing.GroupLayout.PREFERRED_SIZE, 53, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                 .addComponent(cmdIcon, javax.swing.GroupLayout.PREFERRED_SIZE, 53, javax.swing.GroupLayout.PREFERRED_SIZE)))
                         .addContainerGap())
                     .addComponent(jPanel2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
@@ -377,10 +401,11 @@ public class GameMatch extends javax.swing.JFrame implements Observer, ActionLis
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(ScrollChat, javax.swing.GroupLayout.PREFERRED_SIZE, 350, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
-                .addGroup(inforLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(cmdIcon, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 58, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(16, 16, 16))
+                .addGroup(inforLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                    .addComponent(btnMic, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 50, Short.MAX_VALUE)
+                    .addComponent(cmdIcon, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 50, Short.MAX_VALUE)
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
+                .addGap(24, 24, 24))
         );
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
@@ -496,6 +521,17 @@ public class GameMatch extends javax.swing.JFrame implements Observer, ActionLis
         CloseWindow();
         this.dispose();
     }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void btnMicActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMicActionPerformed
+        if (VoiceChatClient.isMicOn) {
+            btnMic.setIcon(new ImageIcon(getClass().getResource("/sample/icon/unMic.png")));
+            VoiceChatClient.isMicOn = false;
+        } else {
+            btnMic.setIcon(new ImageIcon(getClass().getResource("/sample/icon/Mic3.png")));
+            VoiceChatClient.isMicOn = true;
+        }
+
+    }//GEN-LAST:event_btnMicActionPerformed
 
     boolean voiceSelect = true;
 
@@ -736,6 +772,9 @@ public class GameMatch extends javax.swing.JFrame implements Observer, ActionLis
 //                System.out.println("ChECK WIN: " + checkWin(i, j));
 
                 if (checkWinNew(i, j)) {
+//                    Gson gson = new Gson();
+//                    String jsonArray = gson.toJson(tick);
+//                    mClientManager.SaveGame(jsonArray, mClientManager.mNickname);
                     lbTurn.setText("GAME OVER");
                     startGame = false;
                     btnNewGame.setVisible(true);
@@ -1011,6 +1050,7 @@ public class GameMatch extends javax.swing.JFrame implements Observer, ActionLis
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JScrollPane ScrollChat;
     private javax.swing.JPanel boardGame;
+    private Swing.ButtonBorder btnMic;
     private javax.swing.JButton btnNewGame;
     private javax.swing.JLabel client1;
     private javax.swing.JLabel client2;

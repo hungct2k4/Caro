@@ -20,14 +20,14 @@ import javax.sound.sampled.UnsupportedAudioFileException;
 public class Login extends javax.swing.JFrame implements Observer {
 
     ClientManager mClientManager;
-
+    public static String Ip = "localhost";
     public Login() {
         initComponents();
         getContentPane().setBackground(Color.WHITE);
         
-        serverName.setText("localhost");
+        txtServerName.setText("localhost");
+        
         lbName.setVisible(false);
-        serverName.setVisible(false);
         txtUsername.addKeyListener(new KeyAdapter() {
             @Override
             public void keyPressed(KeyEvent e) {
@@ -37,6 +37,8 @@ public class Login extends javax.swing.JFrame implements Observer {
             }
         });
     }
+    
+   
 
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
@@ -47,7 +49,7 @@ public class Login extends javax.swing.JFrame implements Observer {
         btnLogin = new javax.swing.JButton();
         jLabel3 = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
-        serverName = new javax.swing.JTextField();
+        txtServerName = new javax.swing.JTextField();
         lbName = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
         txtPassword = new javax.swing.JTextField();
@@ -86,9 +88,11 @@ public class Login extends javax.swing.JFrame implements Observer {
 
         jLabel4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Assets/images/imagen-game-ca-ca-ro-zingplay-caro-0ori.jpg"))); // NOI18N
 
+        txtServerName.setText("localhost");
+
         lbName.setText("Name Server");
 
-        jLabel5.setText("Author: TRAN CONG HUNG");
+        jLabel5.setText("Author: TRAN CONG HUNGG");
 
         txtPassword.setFont(new java.awt.Font("SansSerif", 0, 18)); // NOI18N
         txtPassword.setHorizontalAlignment(javax.swing.JTextField.CENTER);
@@ -123,8 +127,8 @@ public class Login extends javax.swing.JFrame implements Observer {
                                 .addGap(14, 14, 14)
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addComponent(jLabel5)
-                                    .addComponent(serverName, javax.swing.GroupLayout.PREFERRED_SIZE, 142, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 229, Short.MAX_VALUE)
+                                    .addComponent(txtServerName, javax.swing.GroupLayout.PREFERRED_SIZE, 142, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 221, Short.MAX_VALUE)
                         .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 310, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createSequentialGroup()
                         .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -160,7 +164,7 @@ public class Login extends javax.swing.JFrame implements Observer {
                         .addGap(24, 24, 24)
                         .addComponent(lbName)
                         .addGap(31, 31, 31)
-                        .addComponent(serverName, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(txtServerName, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addGap(60, 60, 60)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(txtUsername, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -196,6 +200,7 @@ public class Login extends javax.swing.JFrame implements Observer {
     }
 
     public void Login() {
+        Ip = txtServerName.getText().trim();
         String urname = txtUsername.getText().trim();
         String password = txtUsername.getText().trim();
         System.out.println(urname);
@@ -208,7 +213,7 @@ public class Login extends javax.swing.JFrame implements Observer {
             mClientManager.Dispose();
         }
         mClientManager = new ClientManager(this);
-        mClientManager.serverName = serverName.getText().trim();
+        mClientManager.serverName = txtServerName.getText().trim();
 
         if (mClientManager.StartConnect()) {
             try {
@@ -297,8 +302,8 @@ public class Login extends javax.swing.JFrame implements Observer {
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel lbName;
-    private javax.swing.JTextField serverName;
     private javax.swing.JTextField txtPassword;
+    private javax.swing.JTextField txtServerName;
     private javax.swing.JTextField txtUsername;
     // End of variables declaration//GEN-END:variables
 
